@@ -10,7 +10,6 @@ const {
     userLeave,
     getRoomUsers
 } = require('./utils/users');
-const { format } = require('path/posix');
 
 const app = express();
 const server = http.createServer(app);
@@ -28,13 +27,15 @@ io.on('connection', socket => {
 
         socket.join(user.room);
 
-        // le damos la bienvenida al nuevo usuario que se unio a la sala
-        socket.broadcast
-            .to(user.room)
-            .emit(
-                'message',
-                formatMessage(botName, `Alla ${user.username} la estan sumando`)
-            );
+    // damos la bienvenida al usuario
+    socket.emit('message', formatMessage(botName, 'Alla le estan dando la bienvenida!'));
+
+    socket.broadcast
+      .to(user.room)
+      .emit(
+        'message',
+        formatMessage(botName, `${user.username} se sumo a la joda`)
+      );
 
             // enviar usuarios e informacion de la sala
             io.to(user.room).emit('roomUser', {
